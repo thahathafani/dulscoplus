@@ -44,7 +44,7 @@ export default function WhyUs() {
               transition={{ duration: 0.5, delay: 0.13 }}
               className="section-body"
             >
-              We earn our clients&apos; confidence through operational consistency, transparent communication, and a relentless focus on safety and quality.
+              We earn our clients confidence through operational consistency, transparent communication, and a relentless focus on safety and quality.
             </motion.p>
             <motion.div
               initial={{ scaleX: 0 }}

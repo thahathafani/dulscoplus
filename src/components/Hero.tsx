@@ -1,11 +1,147 @@
 "use client";
 
-import Image from "next/image";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { hero } from "@/lib/content";
 
+/* ── Animated particle canvas ─────────────────────────── */
+function ParticleCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let width = 0;
+    let height = 0;
+    let mouse = { x: -9999, y: -9999 };
+
+    type Particle = {
+      x: number; y: number;
+      baseX: number; baseY: number;
+      vx: number; vy: number;
+      size: number; opacity: number;
+      color: string;
+    };
+
+    const COLORS = [
+      "rgba(232,64,42,",
+      "rgba(255,255,255,",
+      "rgba(26,48,64,",
+    ];
+
+    let particles: Particle[] = [];
+
+    const resize = () => {
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+      buildGrid();
+    };
+
+    const buildGrid = () => {
+      particles = [];
+      const cols = Math.ceil(width / 44);
+      const rows = Math.ceil(height / 44);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const bx = (c + 0.5) * (width / cols);
+          const by = (r + 0.5) * (height / rows);
+          particles.push({
+            x: bx, y: by,
+            baseX: bx, baseY: by,
+            vx: 0, vy: 0,
+            size: Math.random() * 1.5 + 0.5,
+            opacity: Math.random() * 0.5 + 0.1,
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          });
+        }
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      for (const p of particles) {
+        // Mouse repulsion
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const force = Math.max(0, 120 - dist) / 120;
+        p.vx += -dx * force * 0.025;
+        p.vy += -dy * force * 0.025;
+
+        // Drift back to base
+        p.vx += (p.baseX - p.x) * 0.04;
+        p.vy += (p.baseY - p.y) * 0.04;
+
+        // Damping
+        p.vx *= 0.78;
+        p.vy *= 0.78;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Draw dot
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `${p.color}${p.opacity.toFixed(2)})`;
+        ctx.fill();
+
+        // Faint line to nearest neighbours
+        for (const q of particles) {
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 55 && d > 0) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(232,64,42,${(0.06 * (1 - d / 55)).toFixed(3)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    };
+    const handleMouseLeave = () => {
+      mouse = { x: -9999, y: -9999 };
+    };
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    resize();
+    draw();
+
+    window.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      ro.disconnect();
+      window.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full z-0"
+      style={{ display: "block" }}
+    />
+  );
+}
+
+/* ── Fade-up variant ──────────────────────────────────── */
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
   visible: (i: number) => ({
@@ -21,29 +157,44 @@ export default function Hero() {
       id="hero"
       className="relative min-h-[100svh] flex flex-col overflow-hidden"
       aria-label="Hero"
+      style={{ background: "linear-gradient(135deg, #0a1520 0%, #0f1e2c 50%, #1a2535 100%)" }}
     >
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/hero.png"
-          alt="Dulsco Plus operations in Qatar"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[center_30%]"
+      {/* Interactive particle canvas */}
+      <ParticleCanvas />
+
+      {/* Radial accent glows */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(232,64,42,0.12) 0%, transparent 65%)",
+            animation: "hero-pulse-glow 6s ease-in-out infinite",
+          }}
         />
-        {/* Layered gradient overlays — navy/charcoal editorial tones */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1e2c]/92 via-[#0f1e2c]/72 to-[#0f1e2c]/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1e2c]/60 via-transparent to-[#0f1e2c]/25" />
-        {/* Subtle green-tinted accent glow */}
-        <div className="absolute bottom-0 left-0 w-[60%] h-[40%] bg-gradient-to-tr from-[#2a7a5a]/10 to-transparent" />
+        <div
+          className="absolute bottom-[-15%] left-[-5%] w-[50vw] h-[50vw] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(26,48,64,0.8) 0%, transparent 65%)",
+            animation: "hero-float 10s ease-in-out infinite",
+          }}
+        />
       </div>
+
+      {/* Dotted grid overlay */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.15]"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex items-center pt-[5.5rem] pb-12 lg:pb-16">
         <div className="container-wide w-full">
           <div className="max-w-[680px]">
-            {/* Eyebrow line */}
+            {/* Eyebrow */}
             <motion.div
               custom={0}
               initial="hidden"
@@ -51,13 +202,13 @@ export default function Hero() {
               variants={fadeUp}
               className="flex items-center gap-3 mb-8"
             >
-              <span className="block w-10 h-px bg-[var(--color-brand-red)]" />
+              {/* <span className="block w-10 h-px bg-[var(--color-brand-red)]" />
               <span className="text-white/70 text-[0.6875rem] font-semibold tracking-[0.2em] uppercase">
                 Qatar — Integrated Services
-              </span>
+              </span> */}
             </motion.div>
 
-            {/* Headline — large editorial type */}
+            {/* Headline */}
             <motion.h1
               custom={1}
               initial="hidden"
@@ -119,7 +270,9 @@ export default function Hero() {
         transition={{ delay: 1.5, duration: 0.6 }}
         className="relative z-10 flex flex-col items-center pb-7 gap-1.5"
       >
-        <span className="text-white/40 text-[0.625rem] tracking-[0.25em] uppercase font-medium">Scroll</span>
+        <span className="text-white/40 text-[0.625rem] tracking-[0.25em] uppercase font-medium">
+          Scroll
+        </span>
         <ChevronDown className="text-white/30 animate-bounce" size={16} />
       </motion.div>
     </section>

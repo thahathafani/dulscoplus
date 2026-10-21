@@ -31,7 +31,7 @@ export const nav = [
 export const hero = {
   headline: "Integrated Solutions\nfor a Thriving Qatar",
   subheadline:
-    "We partner with organisations across Qatar to deliver people, environmental, and industrial services — reliably, responsibly, and at scale.",
+    "We partner with organisations across Qatar to deliver people, environmental, and industrial services - reliably, responsibly, and at scale.",
   primaryCta: { label: "Enquire Now", href: "#contact" },
   secondaryCta: { label: "Explore Services", href: "#services" },
 };

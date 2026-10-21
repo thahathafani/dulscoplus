@@ -34,12 +34,12 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]"
-            : "bg-white/80 backdrop-blur-sm"
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]"
+          : "bg-white/80 backdrop-blur-sm"
           }`}
         style={{ willChange: "transform" }}
       >
-        <div className="container-wide flex items-center justify-between h-[4.25rem] lg:h-[4.75rem]">
+        <div className="container-wide flex items-center justify-between h-[5rem] lg:h-[5.75rem]">
           {/* Logo — larger, correct aspect ratio */}
           <Link
             href="/"
@@ -49,10 +49,10 @@ export default function Header() {
             <Image
               src="/logo.svg"
               alt={`${brand.name} logo`}
-              width={200}
-              height={56}
+              width={260}
+              height={80}
               priority
-              className="h-10 sm:h-11 lg:h-12 w-auto object-contain"
+              className="h-20 sm:h-30 lg:h-34 w-auto object-contain"
             />
           </Link>
 

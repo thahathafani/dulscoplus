@@ -30,7 +30,7 @@ export default function About() {
           <AnimatedSection>
             <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
               <Image
-                src="/about.png"
+                src="/about.jpg"
                 alt="Dulsco Plus professional team in Qatar"
                 fill
                 sizes="(max-width:1024px) 100vw, 50vw"
@@ -38,7 +38,7 @@ export default function About() {
               />
               {/* Decorative accent */}
               <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[var(--color-brand-charcoal)]/30 to-transparent" />
-              
+
               {/* Stat overlay card */}
               <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur rounded-xl p-5 flex justify-between">
                 {about.stats.map((stat) => (

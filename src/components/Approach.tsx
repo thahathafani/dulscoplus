@@ -3,107 +3,175 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { approach } from "@/lib/content";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function Approach() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const headerRef = useRef(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="approach" className="section-padding bg-[var(--color-bg)]">
-      <div className="container-wide">
-        {/* Header */}
-        <div className="max-w-2xl mb-16" ref={ref}>
+    <section
+      id="approach"
+      className="section-padding relative overflow-hidden"
+      style={{ background: "linear-gradient(135deg, #0a1520 0%, #0f1c2a 100%)" }}
+    >
+      {/* Dotted background */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.10]"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px)",
+          backgroundSize: "26px 26px",
+        }}
+      />
+
+      {/* Glow accents */}
+      <div
+        className="absolute -top-20 -right-20 w-96 h-96 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(232,64,42,0.12) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(26,48,64,0.6) 0%, transparent 70%)",
+        }}
+      />
+
+      <div className="relative z-10 container-wide">
+        {/* Section header */}
+        <div className="max-w-2xl mb-16 lg:mb-20" ref={headerRef}>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
-            className="eyebrow mb-3"
+            className="text-[var(--color-brand-red)] text-xs font-bold tracking-[0.12em] uppercase mb-3"
           >
             How We Work
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.55, delay: 0.08 }}
-            className="section-heading"
+            className="text-white font-bold leading-[1.15] tracking-tight mb-4"
+            style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", letterSpacing: "-0.02em" }}
           >
             From Enquiry to Delivery
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.14 }}
-            className="section-body mt-4"
+            className="text-white/55 text-[1.0625rem] leading-[1.75]"
           >
             A clear, dependable process that keeps you informed at every step.
           </motion.p>
         </div>
 
-        {/* Steps — vertical connected flow */}
-        <div className="relative max-w-3xl mx-auto">
-          {/* Vertical connector line */}
-          <motion.div
-            initial={{ scaleY: 0 }}
-            animate={inView ? { scaleY: 1 } : {}}
-            transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-            className="absolute left-5 sm:left-7 top-0 bottom-0 w-px bg-gradient-to-b from-[var(--color-brand-red)]/40 via-[var(--color-border)] to-[var(--color-border)] origin-top hidden sm:block"
-          />
+        {/* Steps — horizontal scroll-snap on mobile, grid on desktop */}
+        <div className="relative">
+          {/* Desktop: horizontal connector bar */}
+          <div className="hidden lg:block absolute top-[3.75rem] left-0 right-0 z-0 px-16">
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+              className="h-px origin-left"
+              style={{
+                background:
+                  "linear-gradient(90deg, var(--color-brand-red) 0%, rgba(232,64,42,0.3) 60%, transparent 100%)",
+              }}
+            />
+          </div>
 
-          <div className="flex flex-col gap-0">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-6">
             {approach.map((step, i) => {
               const isLast = i === approach.length - 1;
               return (
-                <motion.div
-                  key={step.step}
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.55, delay: 0.2 + i * 0.13, ease: "easeOut" }}
-                  className="group relative flex gap-5 sm:gap-7 pb-10 last:pb-0"
-                >
-                  {/* Step indicator */}
-                  <div className="relative z-10 flex-shrink-0">
-                    <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                      isLast
-                        ? "bg-[var(--color-brand-red)] text-white shadow-lg shadow-[var(--color-brand-red)]/20"
-                        : "bg-[var(--color-accent-red-light)] text-[var(--color-brand-red)] group-hover:bg-[var(--color-brand-red)] group-hover:text-white"
-                    }`}>
-                      {isLast ? (
-                        <CheckCircle2 size={20} />
-                      ) : (
-                        <span className="font-bold text-sm sm:text-base">{step.step}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 pt-1 sm:pt-2.5">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-base sm:text-lg font-bold text-[var(--color-brand-charcoal)] leading-snug">
-                        {step.title}
-                      </h3>
-                      {!isLast && (
-                        <ArrowRight size={14} className="text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-200 -translate-x-1 group-hover:translate-x-0" />
-                      )}
-                    </div>
-                    <p className="text-sm sm:text-[0.9375rem] text-[var(--color-text-secondary)] leading-relaxed max-w-md">
-                      {step.description}
-                    </p>
-                    {!isLast && (
-                      <motion.div
-                        initial={{ scaleX: 0 }}
-                        animate={inView ? { scaleX: 1 } : {}}
-                        transition={{ duration: 0.5, delay: 0.4 + i * 0.13 }}
-                        className="h-px bg-[var(--color-border)] mt-8 origin-left"
-                      />
-                    )}
-                  </div>
-                </motion.div>
+                <StepCard key={step.step} step={step} index={i} isLast={isLast} />
               );
             })}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function StepCard({
+  step,
+  index,
+  isLast,
+}: {
+  step: { step: string; title: string; description: string };
+  index: number;
+  isLast: boolean;
+}) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.6,
+        delay: 0.15 + index * 0.15,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="group relative flex flex-col items-start lg:items-center"
+    >
+      {/* Number badge */}
+      <motion.div
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={inView ? { scale: 1, opacity: 1 } : {}}
+        transition={{ duration: 0.5, delay: 0.25 + index * 0.15, type: "spring", bounce: 0.4 }}
+        className={`relative z-10 mb-6 w-[4.5rem] h-[4.5rem] rounded-2xl flex items-center justify-center transition-all duration-300 ${
+          isLast
+            ? "bg-[var(--color-brand-red)] text-white shadow-2xl shadow-[var(--color-brand-red)]/30"
+            : "bg-white/10 backdrop-blur-sm border border-white/20 text-white group-hover:bg-[var(--color-brand-red)] group-hover:border-[var(--color-brand-red)] group-hover:shadow-xl group-hover:shadow-[var(--color-brand-red)]/25"
+        }`}
+      >
+        {isLast ? (
+          <CheckCircle2 size={28} />
+        ) : (
+          <span className="font-black text-xl tracking-tight">{step.step}</span>
+        )}
+
+        {/* Animated ring on hover */}
+        <span
+          className="absolute inset-0 rounded-2xl border-2 border-[var(--color-brand-red)] opacity-0 group-hover:opacity-100 scale-[1.18] group-hover:scale-100 transition-all duration-300"
+        />
+      </motion.div>
+
+      {/* Content */}
+      <div className="lg:text-center">
+        <div className="flex lg:justify-center items-center gap-2.5 mb-2.5">
+          <h3 className="font-bold text-white text-base lg:text-[1.0625rem] leading-snug">
+            {step.title}
+          </h3>
+          {!isLast && (
+            <ArrowRight
+              size={13}
+              className="text-[var(--color-brand-red)] opacity-0 group-hover:opacity-100 transition-opacity duration-200 -translate-x-1 group-hover:translate-x-0 flex-shrink-0"
+            />
+          )}
+        </div>
+        <p className="text-white/50 text-sm leading-relaxed max-w-[220px]">
+          {step.description}
+        </p>
+      </div>
+
+      {/* Left border accent (mobile) */}
+      <motion.div
+        initial={{ scaleY: 0 }}
+        animate={inView ? { scaleY: 1 } : {}}
+        transition={{ duration: 0.6, delay: 0.3 + index * 0.15 }}
+        className="lg:hidden absolute left-[2.2rem] top-[4.5rem] bottom-0 w-px bg-gradient-to-b from-[var(--color-brand-red)]/50 to-transparent origin-top last:hidden"
+      />
+    </motion.div>
   );
 }
