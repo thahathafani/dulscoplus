@@ -39,7 +39,7 @@ export default function About() {
               {/* Decorative accent */}
               <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[var(--color-brand-charcoal)]/30 to-transparent" />
 
-              {/* Stat overlay card */}
+              {/* Stat overlay card
               <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur rounded-xl p-5 flex justify-between">
                 {about.stats.map((stat) => (
                   <div key={stat.label} className="text-center">
@@ -47,7 +47,7 @@ export default function About() {
                     <p className="text-[var(--color-text-muted)] text-xs font-medium mt-0.5">{stat.label}</p>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
           </AnimatedSection>
 

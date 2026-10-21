@@ -41,15 +41,15 @@ export const about = {
   eyebrow: "About Dulsco Plus",
   body: [
     "Dulsco Plus is a Qatar-based service company committed to delivering integrated solutions that empower organisations to operate with greater efficiency, safety, and environmental responsibility.",
-    "Drawing on the Dulsco Group's regional heritage and deep operational knowledge, Dulsco Plus brings enterprise-grade capability to the Qatari market — tailored to local requirements, aligned with national development priorities, and anchored in long-term client partnerships.",
+    "Drawing on the Dulsco Group's regional heritage and deep operational knowledge, Dulsco Plus brings enterprise-grade capability to the Qatari market - tailored to local requirements, aligned with national development priorities, and anchored in long-term client partnerships.",
     "Whether you need workforce solutions, environmental management, or industrial supply, we bring the expertise, people, and systems to make it happen.",
   ],
-  stats: [
-    // [PLACEHOLDER – replace with verified figures only]
-    { value: "Qatar", label: "Based & Operated" },
-    { value: "Multi-sector", label: "Service Capability" },
-    { value: "HSE-focused", label: "Operational Standards" },
-  ],
+  // stats: [
+  //   // [PLACEHOLDER – replace with verified figures only]
+  //   { value: "Qatar", label: "Based & Operated" },
+  //   { value: "Multi-sector", label: "Service Capability" },
+  //   { value: "HSE-focused", label: "Operational Standards" },
+  // ],
 };
 
 export const services = [
