@@ -12,6 +12,7 @@ export default function Contact() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   const [formState, setFormState] = useState<FormState>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -49,10 +50,31 @@ export default function Contact() {
       return;
     }
     setFormState("loading");
+    setErrorMsg("");
 
-    // Demo state: no real backend configured yet
-    await new Promise((r) => setTimeout(r, 1200));
-    setFormState("success");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          _honeypot: (e.target as HTMLFormElement).querySelector<HTMLInputElement>("[name='_hp']")?.value || "",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMsg(data.error || "Something went wrong. Please try again.");
+        setFormState("error");
+        return;
+      }
+
+      setFormState("success");
+    } catch {
+      setErrorMsg("Network error. Please check your connection and try again.");
+      setFormState("error");
+    }
   };
 
   const inputClass = (field: keyof typeof form) =>
@@ -107,7 +129,7 @@ export default function Contact() {
                 { icon: MapPin, label: "Location", value: contact.address, href: undefined },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-start gap-4">
-                  <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-white/8 border border-white/10 flex items-center justify-center text-[var(--color-brand-red)]">
+                  <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center text-[var(--color-brand-red)]">
                     <Icon size={18} />
                   </div>
                   <div>
@@ -129,18 +151,15 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, delay: 0.18, ease: "easeOut" }}
             className="lg:col-span-3 bg-white rounded-2xl p-8 shadow-2xl"
           >
             {formState === "success" ? (
               <div className="flex flex-col items-center text-center gap-4 py-12">
                 <CheckCircle size={52} className="text-green-500" />
-                <h3 className="text-xl font-bold text-[var(--color-brand-charcoal)]">Enquiry Received</h3>
+                <h3 className="text-xl font-bold text-[var(--color-brand-charcoal)]">Enquiry Sent</h3>
                 <p className="text-[var(--color-text-secondary)] text-sm max-w-sm">
                   Thank you for reaching out. Our team will review your enquiry and be in touch shortly.
-                </p>
-                <p className="text-xs text-[var(--color-text-muted)] italic mt-2 max-w-sm">
-                  Preview mode: enquiry stored locally. Configure email service before production launch.
                 </p>
                 <button
                   onClick={() => { setFormState("idle"); setForm({ name: "", company: "", email: "", phone: "", service: "", message: "" }); }}
@@ -152,6 +171,11 @@ export default function Contact() {
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
                 <h3 className="text-lg font-bold text-[var(--color-brand-charcoal)] mb-1">Send an Enquiry</h3>
+
+                {/* Honeypot — hidden from users, traps bots */}
+                <div className="absolute -left-[9999px]" aria-hidden="true">
+                  <input type="text" name="_hp" tabIndex={-1} autoComplete="off" />
+                </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -258,7 +282,7 @@ export default function Contact() {
                   {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
                 </div>
 
-                <p className="text-[var(--color-text-muted)] text-xs italic">{contact.formNote}</p>
+                <p className="text-[var(--color-text-muted)] text-xs">{contact.formNote}</p>
 
                 <button
                   type="submit"
@@ -279,9 +303,9 @@ export default function Contact() {
                 </button>
 
                 {formState === "error" && (
-                  <div className="flex items-center gap-2 text-red-500 bg-red-50 rounded-lg p-3">
-                    <AlertCircle size={16} />
-                    <p className="text-sm">Something went wrong. Please try again or contact us directly.</p>
+                  <div className="flex items-start gap-2.5 text-red-600 bg-red-50 rounded-lg p-3">
+                    <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+                    <p className="text-sm">{errorMsg}</p>
                   </div>
                 )}
               </form>

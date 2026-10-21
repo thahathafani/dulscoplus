@@ -96,14 +96,12 @@ export const services = [
 ];
 
 export const industries = [
-  { name: "Oil & Gas", icon: "Flame" },
-  { name: "Healthcare", icon: "Heart" },
-  { name: "Hospitality", icon: "Building2" },
-  { name: "Government & Utilities", icon: "Landmark" },
-  { name: "Facilities Management", icon: "Wrench" },
-  { name: "Construction", icon: "HardHat" },
-  { name: "Manufacturing", icon: "Factory" },
-  { name: "Logistics", icon: "Truck" },
+  { name: "Environment Management", icon: "Leaf", description: "Waste collection, segregation, recycling and sustainable disposal across Qatar." },
+  { name: "Government & Utilities", icon: "Landmark", description: "Workforce and facility support for government bodies and utility providers." },
+  { name: "Facilities Management", icon: "Wrench", description: "Integrated facility maintenance and technical services for commercial properties." },
+  { name: "Construction", icon: "HardHat", description: "Skilled and unskilled labour, site services, and safety management." },
+  { name: "Manufacturing", icon: "Factory", description: "Industrial workforce solutions and process support for manufacturing operations." },
+  { name: "Logistics", icon: "Truck", description: "Manpower, warehousing support, and supply chain services for logistics operators." },
 ];
 
 export const differentiators = [
@@ -192,7 +190,7 @@ export const contact = {
   subheading:
     "Tell us about your requirements and a member of our team will be in touch promptly.",
   formNote:
-    "This is a preview environment. Your enquiry will be securely stored and our team will follow up. [PLACEHOLDER – configure email submission service before production launch]",
+    "Your enquiry will be sent directly to our team. We aim to respond within one business day.",
   email: brand.email,
   phone: brand.phone,
   address: brand.address,

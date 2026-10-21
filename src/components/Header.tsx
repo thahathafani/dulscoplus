@@ -33,27 +33,26 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
             ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]"
             : "bg-white/80 backdrop-blur-sm"
-        }`}
+          }`}
         style={{ willChange: "transform" }}
       >
-        <div className="container-wide flex items-center justify-between h-16 lg:h-18">
-          {/* Logo */}
+        <div className="container-wide flex items-center justify-between h-[4.25rem] lg:h-[4.75rem]">
+          {/* Logo — larger, correct aspect ratio */}
           <Link
             href="/"
             className="relative flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] rounded-sm"
             aria-label={`${brand.name} home`}
           >
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt={`${brand.name} logo`}
-              width={160}
-              height={48}
+              width={200}
+              height={56}
               priority
-              className="h-9 w-auto object-contain"
+              className="h-10 sm:h-11 lg:h-12 w-auto object-contain"
             />
           </Link>
 
@@ -63,7 +62,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-brand-red)] transition-colors duration-200 relative group"
+                className="text-[0.8125rem] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-brand-red)] transition-colors duration-200 relative group"
               >
                 {item.label}
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-[var(--color-brand-red)] transition-all duration-300 group-hover:w-full rounded-full" />
@@ -86,7 +85,7 @@ export default function Header() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </header>
@@ -100,7 +99,7 @@ export default function Header() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "tween", duration: 0.28 }}
-            className="fixed inset-0 z-40 bg-white pt-16 flex flex-col"
+            className="fixed inset-0 z-40 bg-white pt-[4.25rem] flex flex-col"
           >
             <nav className="flex-1 flex flex-col px-6 pt-8 gap-2" aria-label="Mobile navigation">
               {nav.map((item, i) => (

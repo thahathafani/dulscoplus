@@ -14,11 +14,11 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" aria-label={`${brand.name} home`} className="inline-block mb-5">
               <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt={`${brand.name} logo`}
-                width={150}
-                height={44}
-                className="h-9 w-auto object-contain brightness-0 invert"
+                width={200}
+                height={56}
+                className="h-20 lg:h-30 w-auto object-contain brightness-0 invert"
               />
             </Link>
             <p className="text-sm leading-relaxed text-white/55 max-w-sm">

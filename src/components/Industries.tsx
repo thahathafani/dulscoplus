@@ -1,11 +1,9 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView, useMotionValue, useTransform } from "framer-motion";
 import {
-  Flame,
-  Heart,
-  Building2,
+  Leaf,
   Landmark,
   Wrench,
   HardHat,
@@ -14,16 +12,66 @@ import {
 } from "lucide-react";
 import { industries } from "@/lib/content";
 
-const iconMap: Record<string, React.ReactNode> = {
-  Flame: <Flame size={24} />,
-  Heart: <Heart size={24} />,
-  Building2: <Building2 size={24} />,
-  Landmark: <Landmark size={24} />,
-  Wrench: <Wrench size={24} />,
-  HardHat: <HardHat size={24} />,
-  Factory: <Factory size={24} />,
-  Truck: <Truck size={24} />,
+const iconMap: Record<string, React.ComponentType<{ size: number; className?: string }>> = {
+  Leaf,
+  Landmark,
+  Wrench,
+  HardHat,
+  Factory,
+  Truck,
 };
+
+function IndustryCard({ industry, index, inView }: {
+  industry: (typeof industries)[number];
+  index: number;
+  inView: boolean;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+  const rotateX = useTransform(mouseY, [0, 1], [4, -4]);
+  const rotateY = useTransform(mouseX, [0, 1], [-4, 4]);
+
+  const Icon = iconMap[industry.icon];
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width);
+    mouseY.set((e.clientY - rect.top) / rect.height);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: 0.08 + index * 0.07, ease: "easeOut" }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => { setIsHovered(false); mouseX.set(0.5); mouseY.set(0.5); }}
+      style={{
+        rotateX: isHovered ? rotateX : 0,
+        rotateY: isHovered ? rotateY : 0,
+        transformStyle: "preserve-3d",
+      }}
+      className="group relative bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] hover:border-[var(--color-brand-red)]/30 rounded-2xl p-6 sm:p-7 transition-all duration-300 cursor-default"
+    >
+      {/* Glow on hover */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[var(--color-brand-red)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+      <div className="relative z-10">
+        <div className="w-11 h-11 rounded-xl bg-white/[0.06] group-hover:bg-[var(--color-brand-red)]/15 flex items-center justify-center mb-4 transition-all duration-300">
+          {Icon && <Icon size={22} className="text-white/50 group-hover:text-[var(--color-brand-red)] transition-colors duration-300" />}
+        </div>
+        <h3 className="text-white font-bold text-[0.9375rem] leading-snug mb-2 group-hover:text-white transition-colors">
+          {industry.name}
+        </h3>
+        <p className="text-white/40 text-[0.8125rem] leading-relaxed group-hover:text-white/60 transition-colors duration-300">
+          {industry.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Industries() {
   const ref = useRef(null);
@@ -33,9 +81,8 @@ export default function Industries() {
     <section id="industries" className="section-padding bg-[var(--color-brand-charcoal)]">
       <div className="container-wide">
         {/* Header */}
-        <div className="max-w-2xl mb-14">
+        <div className="max-w-2xl mb-14" ref={ref}>
           <motion.p
-            ref={ref}
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
@@ -56,29 +103,16 @@ export default function Industries() {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="text-white/65 text-[1.0625rem] leading-[1.75] mt-4"
+            className="text-white/55 text-[1.0625rem] leading-[1.75] mt-4"
           >
             Our capabilities span the sectors that power Qatar&apos;s economy and communities.
           </motion.p>
         </div>
 
-        {/* Industry grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Industry grid — 6 cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {industries.map((industry, i) => (
-            <motion.div
-              key={industry.name}
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-              className="group flex flex-col items-center gap-3 bg-white/5 hover:bg-[var(--color-brand-red)]/15 border border-white/10 hover:border-[var(--color-brand-red)]/40 rounded-xl p-6 transition-all duration-250 cursor-default"
-            >
-              <div className="text-white/60 group-hover:text-[var(--color-brand-red)] transition-colors duration-250">
-                {iconMap[industry.icon]}
-              </div>
-              <span className="text-white/85 font-semibold text-sm text-center leading-snug group-hover:text-white transition-colors duration-250">
-                {industry.name}
-              </span>
-            </motion.div>
+            <IndustryCard key={industry.name} industry={industry} index={i} inView={inView} />
           ))}
         </div>
       </div>
