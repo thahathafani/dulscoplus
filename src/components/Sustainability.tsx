@@ -77,7 +77,7 @@ export default function Sustainability() {
             className="relative rounded-2xl overflow-hidden aspect-[16/11] shadow-xl"
           >
             <Image
-              src="/sustainability.png"
+              src="/sustain.jpg"
               alt="Sustainability operations in Qatar"
               fill
               sizes="(max-width:1024px) 100vw, 50vw"
