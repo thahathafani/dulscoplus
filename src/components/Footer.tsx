@@ -253,9 +253,9 @@ export default function Footer() {
         </div>
 
         {/* Large decorative text — visible only on lg+ */}
-        {/* <div className="lg:block -mt-2 -mb-2 ml-7 mr-7 overflow-hidden opacity-30 pointer-events-none">
-          <SVGTextStroke text="DULSCOPLUS" />
-        </div> */}
+        <div className="lg:block -mt-2 -mb-2 ml-7 mr-7 overflow-hidden opacity-30 pointer-events-none">
+          <SVGTextStroke text="Dulsco Plus" />
+        </div>
       </div>
     </footer>
   );
